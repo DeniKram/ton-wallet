@@ -28,7 +28,14 @@ button { font: inherit; color: inherit; }
 .app {
   max-width: 480px;
   margin: 0 auto;
-  padding: 16px 16px 32px;
+  /* В полноэкранном режиме Telegram задаёт отступы:
+     safe-area = статус-бар и вырез экрана, content-safe-area = его кнопки «Закрыть» и «⋯».
+     В обычном режиме эти переменные равны 0 или не заданы. */
+  padding:
+    calc(16px + var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px))
+    calc(16px + var(--tg-safe-area-inset-right, 0px))
+    calc(32px + var(--tg-safe-area-inset-bottom, 0px))
+    calc(16px + var(--tg-safe-area-inset-left, 0px));
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -86,7 +93,9 @@ button { font: inherit; color: inherit; }
   background: none; border: 0; padding: 6px 10px; min-height: 36px;
   color: var(--hint); font-size: 14px; cursor: pointer;
 }
-.balance { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; }
+.balance { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; white-space: nowrap; }
+.balance-md { font-size: 32px; }
+.balance-sm { font-size: 26px; }
 .balance-unit { font-size: 22px; color: var(--hint); font-weight: 700; }
 .hint { color: var(--hint); font-size: 13px; line-height: 1.45; }
 .card-actions { display: flex; gap: 8px; width: 100%; margin-top: 4px; }
