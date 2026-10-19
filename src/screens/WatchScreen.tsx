@@ -35,6 +35,13 @@ function errorText(error: unknown): string {
 
 type Status = 'idle' | 'loading' | 'ready' | 'error'
 
+/** Длинные балансы уменьшаем, чтобы «TON» не переносился: "42,5" → 40px, "114 229 281,94" → 26px */
+function balanceSize(text: string): string {
+  if (text.length <= 8) return ''
+  if (text.length <= 11) return 'balance-md'
+  return 'balance-sm'
+}
+
 export default function WatchScreen() {
   const [input, setInput] = useState(loadSaved)
   const [inputError, setInputError] = useState<string | null>(null)
@@ -152,8 +159,8 @@ export default function WatchScreen() {
 
           {account ? (
             <>
-              <div className="balance">
-                {formatTon(account.balance, 2)} <span className="balance-unit">TON</span>
+              <div className={`balance ${balanceSize(formatTon(account.balance, 2))}`}>
+                {formatTon(account.balance, 2)}&nbsp;<span className="balance-unit">TON</span>
               </div>
               {account.state === 'uninitialized' && (
                 <div className="hint">Кошелёк ещё не активирован: он станет активным после первой исходящей транзакции.</div>
