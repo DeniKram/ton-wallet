@@ -1,4 +1,4 @@
-// Минимальные типы для того, что используем сейчас; будем расширять по мере надобности
+// Минимальные типы для того, что используем; расширяем по мере надобности
 interface TelegramUser {
   id: number
   first_name: string
@@ -8,8 +8,9 @@ interface TelegramUser {
 interface TelegramWebApp {
   ready(): void
   expand(): void
+  openLink(url: string): void // открыть внешнюю ссылку (браузер поверх Telegram)
   platform: string // 'ios' | 'android' | 'tdesktop' | 'web' | ... ; 'unknown' вне Telegram
-  version: string // версия Bot API, например '9.1'
+  version: string // версия Bot API, например '9.6'
   colorScheme: 'light' | 'dark'
   initDataUnsafe: { user?: TelegramUser }
   isVersionAtLeast(version: string): boolean
@@ -30,4 +31,10 @@ export function initTelegram(): void {
   if (!tg) return
   tg.ready() // сообщаем Telegram, что приложение загрузилось (убирает лоадер)
   tg.expand() // разворачиваем на всю высоту
+}
+
+/** Открыть внешнюю ссылку: в Telegram через его браузер, иначе в новой вкладке */
+export function openExternal(url: string): void {
+  if (tg) tg.openLink(url)
+  else window.open(url, '_blank', 'noopener')
 }

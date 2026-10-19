@@ -1,10 +1,16 @@
-/* Telegram сам выставляет переменные --tg-theme-*; в обычном браузере берём запасные цвета */
+/* Цвета берём из темы Telegram (он сам выставляет --tg-theme-*).
+   Вне Telegram используются запасные значения: тёмная тема как на макете. */
 :root {
   --bg: var(--tg-theme-bg-color, #0b0f17);
   --text: var(--tg-theme-text-color, #eef2f7);
   --hint: var(--tg-theme-hint-color, #94a0b4);
   --card: var(--tg-theme-secondary-bg-color, #121824);
-  --accent: #3aa8f5;
+  --link: var(--tg-theme-link-color, #3aa8f5);
+  --accent: var(--tg-theme-button-color, #3aa8f5);
+  --accent-text: var(--tg-theme-button-text-color, #06121f);
+  --danger: var(--tg-theme-destructive-text-color, #e5534b);
+  --success: #1f9d63;
+  --line: color-mix(in srgb, var(--hint) 25%, transparent);
 }
 
 * { box-sizing: border-box; }
@@ -14,26 +20,112 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
+
+button { font: inherit; color: inherit; }
 
 .app {
   max-width: 480px;
   margin: 0 auto;
-  padding: 20px 16px;
+  padding: 16px 16px 32px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* --- шапка --- */
+.topbar { display: flex; align-items: center; justify-content: space-between; }
+.title { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.badge {
+  font-size: 12px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+  color: #8a5a00; background: #ffd77a;
 }
 
+/* --- поиск --- */
+.search { display: flex; flex-direction: column; gap: 6px; }
+.search-row { display: flex; gap: 8px; }
 .label { color: var(--hint); font-size: 13px; }
-.value { font-size: 15px; word-break: break-all; }
-.ok { color: var(--accent); font-weight: 600; }
+.input {
+  flex: 1; min-width: 0;
+  background: var(--card); color: var(--text);
+  border: 1px solid var(--line); border-radius: 12px;
+  font: inherit; font-size: 15px;
+  padding: 12px 14px; min-height: 44px;
+  outline: none;
+}
+.input:focus { border-color: var(--accent); }
+.error-text { color: var(--danger); font-size: 13px; }
+
+/* --- кнопки --- */
+.btn {
+  border: 0; border-radius: 12px;
+  padding: 0 16px; min-height: 44px;
+  font-weight: 700; font-size: 15px;
+  cursor: pointer;
+}
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn-primary { background: var(--accent); color: var(--accent-text); }
+.btn-secondary { background: color-mix(in srgb, var(--hint) 15%, transparent); color: var(--text); flex: 1; }
+.btn-link {
+  align-self: flex-start;
+  background: none; border: 0; padding: 8px 0;
+  color: var(--link); font-size: 14px; font-weight: 600; cursor: pointer;
+}
+
+/* --- карточка баланса --- */
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 16px;
+}
+.balance-card { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.address-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 0; padding: 6px 10px; min-height: 36px;
+  color: var(--hint); font-size: 14px; cursor: pointer;
+}
+.balance { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; }
+.balance-unit { font-size: 22px; color: var(--hint); font-weight: 700; }
+.hint { color: var(--hint); font-size: 13px; line-height: 1.45; }
+.card-actions { display: flex; gap: 8px; width: 100%; margin-top: 4px; }
+.error-card { color: var(--danger); font-size: 14px; line-height: 1.45; }
+
+/* --- история --- */
+.history { display: flex; flex-direction: column; }
+.section-title { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
+.tx {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; text-align: left;
+  background: none; border: 0; border-bottom: 1px solid var(--line);
+  padding: 12px 0; cursor: pointer;
+}
+.tx:last-child { border-bottom: 0; }
+.tx-icon {
+  flex-shrink: 0;
+  width: 40px; height: 40px; border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--card); font-weight: 800; font-size: 18px;
+}
+.tx-icon-in { color: var(--success); }
+.tx-icon-out { color: var(--hint); }
+.tx-icon-other { color: var(--hint); }
+.tx-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.tx-title { font-weight: 600; font-size: 15px; }
+.tx-sub {
+  color: var(--hint); font-size: 13px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tx-amount { flex-shrink: 0; font-weight: 700; font-size: 15px; }
+.tx-amount-in { color: var(--success); }
+
+/* --- заглушки, пока данные грузятся --- */
+.skeleton {
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--hint) 18%, transparent);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.balance-skeleton { width: 180px; height: 44px; }
+.tx-skeleton { height: 52px; margin: 6px 0; }
+@keyframes pulse { 50% { opacity: 0.45; } }
